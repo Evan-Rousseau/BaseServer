@@ -1,5 +1,6 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <windows.h>
 #include <winsock2.h>
 #include <stdlib.h>
@@ -7,15 +8,12 @@
 #include <ws2tcpip.h>
 #include <iostream>
 #include <vector>
+#include <string>
 #include <iphlpapi.h>
 
-#include "Server.h"
-#include "SocketManager.h"
-#include "MessagesManager.h"
-#include "Callback.h"
+using namespace std;
 
 #define DEFAULT_BUFLEN 512
 #define WM_SOCKET WM_USER + 1
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
-using namespace std;
+#define DEFAULT_PORT "8000"

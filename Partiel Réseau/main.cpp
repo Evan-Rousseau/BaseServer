@@ -1,17 +1,25 @@
 #include "utils.h"
+#include "Server.h"
 
-int main(int argc, char* argv[]) 
+void createConsole() {
+#define _CRT_SECURE_NO_WARNINGS
+
+    FILE* fpstdin = stdin, * fpstdout = stdout, * fpstderr = stderr;
+    AllocConsole();
+    freopen_s(&fpstdout, "CONOUT$", "w", stdout);
+    freopen_s(&fpstderr, "CONOUT$", "w", stderr);
+    freopen_s(&fpstdin, "CONIN$", "r", stdin);
+
+}
+
+int WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
-    //WNDCLASSEX wc;
+    createConsole();
+
     WSADATA wsaData;
     int iResult;
+    Server* servSocket = new Server(hInstance);
+    servSocket->init();
 
-    iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    if (iResult != 0)
-    {
-        printf("WSAStartup failed : %d \n", iResult);
-    }
-    else {
-        Server* servSocket = new Server();
-        servSocket->ServerLaunch();
+    while(1){}
 }
