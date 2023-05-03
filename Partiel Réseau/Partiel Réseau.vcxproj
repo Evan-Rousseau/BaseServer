@@ -127,19 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Callback.cpp" />
+    <ClCompile Include="HTTPRequestHandler.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MessagesManager.cpp" />
     <ClCompile Include="Server.cpp" />
-    <ClCompile Include="ServerCallback.cpp" />
-    <ClCompile Include="SocketManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Callback.h" />
-    <ClInclude Include="MessagesManager.h" />
+    <ClInclude Include="HTTPRequestHandler.h" />
     <ClInclude Include="Server.h" />
-    <ClInclude Include="ServerCallback.h" />
-    <ClInclude Include="SocketManager.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

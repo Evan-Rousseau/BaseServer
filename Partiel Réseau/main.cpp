@@ -16,10 +16,12 @@ int WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPS
 {
     createConsole();
 
-    WSADATA wsaData;
-    int iResult;
     Server* servSocket = new Server(hInstance);
-    servSocket->init();
+    servSocket->LaunchServer();
 
-    while(1){}
+    while (1) {
+        servSocket->ProcessMessage();
+    }
+
+    servSocket->closeServer();
 }

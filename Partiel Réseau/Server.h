@@ -1,7 +1,6 @@
 #pragma once
 #include "utils.h"
-#include "SocketManager.h"
-#include "ServerCallback.h"
+#include "HTTPRequestHandler.h"
 class Server
 {
     HWND hwnd_;
@@ -21,22 +20,16 @@ class Server
     char recvbuf[DEFAULT_BUFLEN];
     int recvbuflen = DEFAULT_BUFLEN;
 
-    int maxClient_ = 2;
-    //void(*socketEvent_) (string msg, int indexSock);
-    ServerCallback* scb = nullptr;
+    HTTPRequestHandler* requestHandler;
 
 public:
-    void setScb(ServerCallback* callback) { scb = callback; }
-
     Server(_In_ HINSTANCE hInstance);
     ~Server();
-    void maxClient(int maxClient) { maxClient_ = maxClient; }
-    int maxClient() { return maxClient_; }
     int GetNBClientConnect() { return v_clientSockets.size(); }
 
-    bool init();
-    void createGhostWindow();
-    void createListening();
+    bool LaunchServer();
+    void CreateHiddenEventWindow();
+    void CreateListenSocket();
 
     void openClientSocket(WPARAM wParam);
     void closeClientSocket(WPARAM wParam);
@@ -44,7 +37,7 @@ public:
 
     int findBufferLen(int socketIndex);
     string recieveClientData(int socketIndex);
-    bool sendClientData(int socketIndex, char* msg);
+    bool sendClientData(int socketIndex, string msg);
 
     static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         Server* me = (Server*)(GetWindowLongPtr(hwnd, GWLP_USERDATA));

@@ -1,10 +1,9 @@
-﻿  Server.cpp
-C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\Server.h(35): warning C4267: 'return' : conversion de 'size_t' en 'int', perte possible de données
-C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\Server.cpp(131,28): warning C4244: 'argument' : conversion de 'WPARAM' en 'int', perte possible de données
-C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\Server.cpp(226,36): warning C4244: 'argument' : conversion de 'WPARAM' en 'int', perte possible de données
+﻿  HTTPRequestHandler.cpp
+  Server.cpp
+C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\Server.h(28): warning C4267: 'return' : conversion de 'size_t' en 'int', perte possible de données
+C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\Server.cpp(125,28): warning C4244: 'argument' : conversion de 'WPARAM' en 'int', perte possible de données
+C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\Server.cpp(219,36): warning C4244: 'argument' : conversion de 'WPARAM' en 'int', perte possible de données
   main.cpp
-C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\Server.h(35): warning C4267: 'return' : conversion de 'size_t' en 'int', perte possible de données
-C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\main.cpp(20,9): warning C4101: 'iResult' : variable locale non référencée
-C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\main.cpp(19,13): warning C4101: 'wsaData' : variable locale non référencée
+C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\Partiel Réseau\Server.h(28): warning C4267: 'return' : conversion de 'size_t' en 'int', perte possible de données
   Génération de code en cours...
   Partiel Réseau.vcxproj -> C:\Users\evanr\OneDrive\Documents\GitProjects\BaseServer\x64\Debug\Partiel Réseau.exe

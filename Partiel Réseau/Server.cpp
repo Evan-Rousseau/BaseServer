@@ -1,13 +1,14 @@
 #include "Server.h"
 
 Server::Server(_In_ HINSTANCE hInstance) :hInstance_(hInstance) {
+    requestHandler = new HTTPRequestHandler();
 }
 
 Server::~Server() {
-
+    delete requestHandler;
 }
 
-bool Server::init()
+bool Server::LaunchServer()
 {
     ListenSocket = INVALID_SOCKET;
 
@@ -25,14 +26,14 @@ bool Server::init()
     hints.ai_flags = AI_PASSIVE;
 
 
-    createGhostWindow();
+    CreateHiddenEventWindow();
 
-    createListening();
+    CreateListenSocket();
 
     return true;
 }
 
-void Server::createGhostWindow() {
+void Server::CreateHiddenEventWindow() {
 
     wc_ = { 0 };
     ZeroMemory(&wc_, sizeof(WNDCLASSEX));
@@ -55,7 +56,7 @@ void Server::createGhostWindow() {
 
 }
 
-void Server::createListening() {
+void Server::CreateListenSocket() {
 
     // Initialize Winsock
     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -114,16 +115,9 @@ void Server::createListening() {
 
 
 void Server::openClientSocket(WPARAM wParam) {
-
     // Accept an incoming connection
-    if (v_clientSockets.size() < maxClient_) {
-        v_clientSockets.push_back(accept(wParam, NULL, NULL));
-        WSAAsyncSelect(v_clientSockets[v_clientSockets.size() - 1], hwnd_, WM_SOCKET, FD_ALL_EVENTS);
-    }
-    else {
-        //Max connexion reached
-        closesocket(accept(wParam, NULL, NULL));
-    }
+    v_clientSockets.push_back(accept(wParam, NULL, NULL));
+    WSAAsyncSelect(v_clientSockets[v_clientSockets.size() - 1], hwnd_, WM_SOCKET, FD_ALL_EVENTS);
 }
 
 void Server::closeClientSocket(WPARAM wParam) {
@@ -160,30 +154,30 @@ string Server::recieveClientData(int socketIndex)
     memset(recvbuf, 0, sizeof(recvbuf));
 
     string all = "";
-    iResult = recv(v_clientSockets[socketIndex], recvbuf, findBufferLen(socketIndex), 0);
-    if (iResult > 0)
-        printf("Bytes received: %d\n", iResult);
-    else if (iResult == 0)
-        printf("Connection closed\n");
-    else {
-        // if (WSAGetLastError() == WSAEWOULDBLOCK)break;  //Nothing left to read
-        printf("recv failed with error: %d\n", WSAGetLastError());
-    }
+    do {
+        iResult = recv(v_clientSockets[socketIndex], recvbuf, recvbuflen, 0);
+        if (iResult > 0)
+            printf("Bytes received: %d\n", iResult);
+        else if (iResult == 0)
+            printf("Connection closed\n");
+        else {
+            if (WSAGetLastError() == WSAEWOULDBLOCK)break;  //Nothing left to read
+            printf("recv failed with error: %d\n", WSAGetLastError());
+        }
 
 
-    //printf(recvbuf);
-    all += recvbuf;
-    cout << all;
+        //printf(recvbuf);
+        all += recvbuf;
+    } while (iResult > 0);
     return all;
 }
 
-bool Server::sendClientData(int socketIndex, char* msg) {
+bool Server::sendClientData(int socketIndex, string msg) {
 
-    string s = to_string((int)strlen(msg)) + ":";
-    char const* pchar = s.c_str();  //use char const* as target type
-    iResult = send(v_clientSockets[socketIndex], pchar, (int)strlen(pchar), 0);
+    const char* tmpCharBuf = msg.data();
+    char* sendBuf = const_cast<char*>(tmpCharBuf);
 
-    iResult = send(v_clientSockets[socketIndex], msg, (int)strlen(msg), 0);
+    iResult = send(v_clientSockets[socketIndex], sendBuf, (int)strlen(sendBuf), 0);
     if (iResult == SOCKET_ERROR) {
         printf("send failed with error: %d\n", WSAGetLastError());
         return false;
@@ -217,7 +211,6 @@ LRESULT Server::realWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
             // Prepare accepted socket for read, write, and close notification
             printf("FD_ACCEPT\n");
             openClientSocket(wParam);
-            scb->callBack("", -1);
             break;
 
         case FD_READ:
@@ -225,7 +218,8 @@ LRESULT Server::realWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
             printf("FD_READ\n");
             sockIndex = findSocket(wParam);
             data = recieveClientData(sockIndex);
-            scb->callBack(data, sockIndex);
+            // Use data
+            sendClientData(sockIndex, requestHandler->HandleRequest(data));
             break;
 
         case FD_WRITE:
